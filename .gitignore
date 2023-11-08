@@ -1,0 +1,8 @@
+*.out
+*.o
+*.swp
+*.a
+\#*\#
+*~
+
+include/my.h
