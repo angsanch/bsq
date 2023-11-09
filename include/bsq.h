@@ -11,6 +11,7 @@
     #include <stdlib.h>
 
 typedef struct board_data{
+    size_t added_lines;
     size_t width;
     size_t height;
     char **map;
