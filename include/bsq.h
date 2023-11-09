@@ -14,6 +14,8 @@ typedef struct board_data{
     size_t added_lines;
     size_t width;
     size_t height;
+    ssize_t buff_size;
+    char *buff;
     char **map;
 } board;
 

@@ -17,6 +17,7 @@ static board *create_empty_board(void)
 
     if (b == NULL)
         return (NULL);
+    b->buff = NULL;
     b->map = NULL;
     b->width = 0;
     b->height = 0;
@@ -47,32 +48,38 @@ static ssize_t file_to_buffer(char const *file, char **buff)
     return (file_stat.st_size);
 }
 
-static int add_line(board *b, char const *start)
+static int add_line(board *b, size_t offset)
 {
-    b->map[b->added_lines] = malloc(sizeof(char) * (b->width + 1));
-    if (b->map[b->added_lines] == NULL)
+    size_t i = 0;
+
+    i = b->width;
+    while (i < b->width){
+        if (my_strchr_index("o.", b->buff[offset]) == -1)
+            return (0);
+        i ++;
+    }
+    if (b->buff[offset + i] != '\n')
         return (0);
-    my_strncpy(b->map[b->added_lines], start, b->width + 1);
+    b->map[b->added_lines] = b->buff + offset;
     b->added_lines ++;
     return (1);
 }
 
-static int parse_buffer(char const *buff, size_t buff_size, board *b)
+static int parse_buffer(board *b)
 {
     size_t i = 0;
 
-    (void)buff_size;
-    if (!my_isnumeric(buff[0]))
+    if (!my_isnumeric(b->buff[0]))
         return (0);
-    b->height = my_getnbr(buff);
+    b->height = my_getnbr(b->buff);
     i += my_intlen(b->height);
     b->map = malloc(sizeof(char *) * b->height);
-    if (buff[i] != '\n' || b->map == NULL)
+    if (b->buff[i] != '\n' || b->map == NULL)
         return (0);
     i += 1;
-    b->width = my_strchr_index(buff + i, '\n');
+    b->width = my_strchr_index(b->buff + i, '\n');
     while (b->added_lines < b->height){
-        if (!add_line(b, buff + i))
+        if (!add_line(b, i))
             return (0);
         i += b->width + 1;
     }
@@ -82,23 +89,19 @@ static int parse_buffer(char const *buff, size_t buff_size, board *b)
 board *board_from_file(char const *file)
 {
     board *b;
-    ssize_t buff_size;
-    char *buff = NULL;
 
-    buff_size = file_to_buffer(file, &buff);
-    if (buff_size == -1)
-        return (NULL);
     b = create_empty_board();
-    if (b == NULL){
-        free(buff);
+    if (b == NULL)
         return (NULL);
-    }
-    if (!parse_buffer(buff, buff_size, b)){
-        free(buff);
+    b->buff_size = file_to_buffer(file, &b->buff);
+    if (b->buff_size == -1){
         destroy_board(b);
         return (NULL);
     }
-    free(buff);
+    if (!parse_buffer(b)){
+        destroy_board(b);
+        return (NULL);
+    }
     return (b);
 }
 
@@ -111,23 +114,12 @@ board *generate_board(char const *size, char const *pattern)
 
 void print_board(board *b)
 {
-    size_t i = 0;
-
-    while (i < b->height){
-        my_putstr(b->map[i]);
-        my_putchar('\n');
-        i ++;
-    }
+    write(1, b->buff, b->buff_size);
 }
 
 void destroy_board(board *b)
 {
-    size_t i = 0;
-
-    while (i < b->height){
-        free(b->map[i]);
-        i ++;
-    }
+    free(b->buff);
     free(b->map);
     free(b);
 }
