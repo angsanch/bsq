@@ -108,18 +108,77 @@ board *board_from_file(char const *file)
     return (b);
 }
 
+static board *prepare_board(char const *size)
+{
+    board *b = create_empty_board();
+
+    if (b == NULL)
+        return (NULL);
+    b->width = my_getnbr(size);
+    b->height = b->width;
+    b->buff_size = (b->width + 1) * b->height + 1;
+    b->buff = malloc(sizeof(char) * b->buff_size);
+    b->map = malloc(sizeof(char *) * b->height);
+    if (b->buff == NULL || b->map == NULL){
+        destroy_board(b);
+        return (NULL);
+    }
+    while (b->added_lines < b->height){
+        b->map[b->added_lines] = b->buff + 1 + ((b->width + 1) *
+            b->added_lines);
+        b->added_lines ++;
+    }
+    b->buff[0] = '\n';
+    return (b);
+}
+
+static void apply_pattern(board *b, char const *pattern)
+{
+    size_t i = 0;
+    size_t p = 0;
+
+    b->added_lines = 0;
+    while (b->added_lines < b->height){
+        if (i == b->width){
+            b->map[b->added_lines][i] = '\n';
+            i = 0;
+            b->added_lines ++;
+            continue;
+        }
+        if (pattern[p] == '\0')
+            p = 0;
+        b->map[b->added_lines][i] = pattern[p];
+        i ++;
+        p ++;
+    }
+}
+
 board *generate_board(char const *size, char const *pattern)
 {
-    (void)size;
-    (void)pattern;
-    return (NULL);
+    size_t i = 0;
+    int len_size = my_strlen(size);
+    board *b;
+
+    if (!my_isnumeric(size[0]) || my_intlen(my_getnbr(size)) != len_size ||
+        my_strlen(pattern) == 0)
+        return (NULL);
+    while (pattern[i] != 0){
+        if (pattern[i] != '.' && pattern[i] != 'o')
+            return (NULL);
+        i ++;
+    }
+    b = prepare_board(size);
+    if (b == NULL)
+        return (NULL);
+    apply_pattern(b, pattern);
+    return (b);
 }
 
 void print_board(board *b)
 {
-    int len = my_intlen(b->height) + 1;
+    int offset = my_strchr_index(b->buff, '\n') + 1;
 
-    write(1, b->buff + len, b->buff_size - len);
+    write(1, b->buff + offset, b->buff_size - offset);
 }
 
 void destroy_board(board *b)
