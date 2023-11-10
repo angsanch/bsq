@@ -114,7 +114,9 @@ board *generate_board(char const *size, char const *pattern)
 
 void print_board(board *b)
 {
-    write(1, b->buff, b->buff_size);
+    int len = my_intlen(b->height) + 1;
+
+    write(1, b->buff + len, b->buff_size - len);
 }
 
 void destroy_board(board *b)
