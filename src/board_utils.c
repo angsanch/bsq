@@ -51,16 +51,18 @@ static ssize_t file_to_buffer(char const *file, char **buff)
 static int add_line(board *b, size_t offset)
 {
     size_t i = 0;
+    size_t row = b->added_lines;
+    char c;
 
-    i = b->width;
+    b->map[row] = b->buff + offset;
     while (i < b->width){
-        if (my_strchr_index("o.", b->buff[offset]) == -1)
+        c = b->map[row][i];
+        if (c != '.' && c != 'o')
             return (0);
         i ++;
     }
     if (b->buff[offset + i] != '\n')
         return (0);
-    b->map[b->added_lines] = b->buff + offset;
     b->added_lines ++;
     return (1);
 }
