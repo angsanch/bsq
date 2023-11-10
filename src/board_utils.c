@@ -21,6 +21,7 @@ static board *create_empty_board(void)
     b->map = NULL;
     b->width = 0;
     b->height = 0;
+    b->added_lines = 0;
     return (b);
 }
 
