@@ -19,6 +19,12 @@ typedef struct board_data{
     char **map;
 } board;
 
+typedef struct square_data{
+    size_t size;
+    size_t x;
+    size_t y;
+} square;
+
 board *board_from_file(char const *file);
 board *generate_board(char const *size, char const *pattern);
 void print_board(board *b);
