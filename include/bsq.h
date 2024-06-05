@@ -31,6 +31,6 @@ board_t *generate_board(char const *size, char const *pattern);
 void print_board(board_t *b);
 void destroy_board(board_t *b);
 
-size_t bsq(board_t *b);
+size_t biggest_square(board_t *b);
 
 #endif

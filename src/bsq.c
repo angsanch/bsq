@@ -1,99 +1,38 @@
 /*
 ** EPITECH PROJECT, 2023
-** bsq.c
+** setting_up.c
 ** File description:
-** Find the biggest square
+** Search for squares
 */
 
-#include <stdlib.h>
+#include <unistd.h>
 #include "../include/bsq.h"
 
-static int scan_row(board_t *b, size_t row, size_t start, size_t end)
+static int report_error(char *str)
 {
-    while (start < end){
-        if (b->map[row][start] != '.')
-            return (0);
-        start ++;
+    size_t i = 0;
+
+    while (str[i] != '\0'){
+        write(2, str + i, 1);
+        i ++;
     }
-    return (1);
+    return (84);
 }
 
-static int scan_column(board_t *b, size_t column, size_t start, size_t end)
+int main(int argc, char **argv)
 {
-    while (start < end){
-        if (b->map[start][column] != '.')
-            return (0);
-        start ++;
-    }
-    return (1);
-}
+    board_t *b;
 
-size_t biggest_here(board_t *b, size_t x, size_t y)
-{
-    size_t size = 0;
-
-    if (b->map[y][x] != '.')
-        return (0);
-    while (size + x < b->width && size + y < b->height){
-        if (!scan_row(b, y + size, x, x + size + 1))
-            return (size);
-        if (!scan_column(b, x + size, y, y + size))
-            return (size);
-        size ++;
-    }
-    return (size);
-}
-
-void draw_square(board_t *b, square_t *s)
-{
-    size_t i = s->x;
-    size_t j = s->y;
-    size_t x_limit = s->size + s->x;
-    size_t y_limit = s->size + s->y;
-
-    while (j < y_limit){
-        while (i < x_limit){
-            b->map[j][i] = 'x';
-            i ++;
-        }
-        j ++;
-        i = s->x;
-    }
-}
-
-static void squares_row(board_t *b, square_t *max, size_t y)
-{
-    size_t x = 0;
-    size_t temp;
-
-    while (x < b->width){
-        temp = biggest_here(b, x, y);
-        if (temp > max->size){
-            max->size = temp;
-            max->x = x;
-            max->y = y;
-        }
-        x ++;
-    }
-}
-
-static void start_square(square_t *s)
-{
-    s->size = 0;
-    s->x = 0;
-    s->y = 0;
-}
-
-size_t bsq(board_t *b)
-{
-    square_t max;
-    size_t y = 0;
-
-    start_square(&max);
-    while (y < b->height){
-        squares_row(b, &max, y);
-        y ++;
-    }
-    draw_square(b, &max);
+    if (argc <= 1 || argc >= 4)
+        return (report_error("Invalid amount of parameters.\n"));
+    if (argc == 2)
+        b = board_from_file(argv[1]);
+    else
+        b = generate_board(argv[1], argv[2]);
+    if (b == NULL)
+        return (report_error("Error preparing the board\n"));
+    biggest_square(b);
+    print_board(b);
+    destroy_board(b);
     return (0);
 }

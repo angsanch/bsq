@@ -10,11 +10,11 @@ CC=gcc
 CFLAGS=-Wall -Werror -Wextra
 
 C_FILES = src/board_utils.c\
-            src/bsq.c
+            src/biggest_square.c
 
 O_FILES = $(C_FILES:.c=.o)
 
-NAME=setting_up
+NAME=bsq
 
 $(NAME): lib/libmy.a $(O_FILES)
 	gcc $(CFLAGS) -o $(NAME) src/$(NAME).c $(O_FILES) lib/libmy.a
