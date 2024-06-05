@@ -11,9 +11,9 @@
 #include "../include/my.h"
 #include "../include/bsq.h"
 
-static board *create_empty_board(void)
+static board_t *create_empty_board(void)
 {
-    board *b = malloc(sizeof(board) * 1);
+    board_t *b = malloc(sizeof(board_t) * 1);
 
     if (b == NULL)
         return (NULL);
@@ -49,7 +49,7 @@ static ssize_t file_to_buffer(char const *file, char **buff)
     return (file_stat.st_size);
 }
 
-static int add_line(board *b, size_t offset)
+static int add_line(board_t *b, size_t offset)
 {
     size_t i = 0;
     size_t row = b->added_lines;
@@ -68,7 +68,7 @@ static int add_line(board *b, size_t offset)
     return (1);
 }
 
-static int parse_buffer(board *b)
+static int parse_buffer(board_t *b)
 {
     size_t i = 0;
 
@@ -89,9 +89,9 @@ static int parse_buffer(board *b)
     return (1);
 }
 
-board *board_from_file(char const *file)
+board_t *board_from_file(char const *file)
 {
-    board *b;
+    board_t *b;
 
     b = create_empty_board();
     if (b == NULL)
@@ -108,9 +108,9 @@ board *board_from_file(char const *file)
     return (b);
 }
 
-static board *prepare_board(char const *size)
+static board_t *prepare_board(char const *size)
 {
-    board *b = create_empty_board();
+    board_t *b = create_empty_board();
 
     if (b == NULL)
         return (NULL);
@@ -132,7 +132,7 @@ static board *prepare_board(char const *size)
     return (b);
 }
 
-static void apply_pattern(board *b, char const *pattern)
+static void apply_pattern(board_t *b, char const *pattern)
 {
     size_t i = 0;
     size_t p = 0;
@@ -153,11 +153,11 @@ static void apply_pattern(board *b, char const *pattern)
     }
 }
 
-board *generate_board(char const *size, char const *pattern)
+board_t *generate_board(char const *size, char const *pattern)
 {
     size_t i = 0;
     int len_size = my_strlen(size);
-    board *b;
+    board_t *b;
 
     if (!my_isnumeric(size[0]) || my_intlen(my_getnbr(size)) != len_size ||
         my_strlen(pattern) == 0)
@@ -174,14 +174,14 @@ board *generate_board(char const *size, char const *pattern)
     return (b);
 }
 
-void print_board(board *b)
+void print_board(board_t *b)
 {
     int offset = my_strchr_index(b->buff, '\n') + 1;
 
     write(1, b->buff + offset, b->buff_size - offset);
 }
 
-void destroy_board(board *b)
+void destroy_board(board_t *b)
 {
     free(b->buff);
     free(b->map);

@@ -9,27 +9,28 @@
     #define BSQ_H_
 
     #include <stdlib.h>
+    #include <unistd.h>
 
-typedef struct board_data{
+typedef struct board_data {
     size_t added_lines;
     size_t width;
     size_t height;
     ssize_t buff_size;
     char *buff;
     char **map;
-} board;
+} board_t;
 
-typedef struct square_data{
+typedef struct square_data {
     size_t size;
     size_t x;
     size_t y;
-} square;
+} square_t;
 
-board *board_from_file(char const *file);
-board *generate_board(char const *size, char const *pattern);
-void print_board(board *b);
-void destroy_board(board *b);
+board_t *board_from_file(char const *file);
+board_t *generate_board(char const *size, char const *pattern);
+void print_board(board_t *b);
+void destroy_board(board_t *b);
 
-size_t bsq(board *b);
+size_t bsq(board_t *b);
 
 #endif

@@ -21,7 +21,7 @@ static int report_error(char *str)
 
 int main(int argc, char **argv)
 {
-    board *b;
+    board_t *b;
 
     if (argc <= 1 || argc >= 4)
         return (report_error("Invalid amount of parameters.\n"));

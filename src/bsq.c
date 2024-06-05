@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "../include/bsq.h"
 
-static int scan_row(board *b, size_t row, size_t start, size_t end)
+static int scan_row(board_t *b, size_t row, size_t start, size_t end)
 {
     while (start < end){
         if (b->map[row][start] != '.')
@@ -18,7 +18,7 @@ static int scan_row(board *b, size_t row, size_t start, size_t end)
     return (1);
 }
 
-static int scan_column(board *b, size_t column, size_t start, size_t end)
+static int scan_column(board_t *b, size_t column, size_t start, size_t end)
 {
     while (start < end){
         if (b->map[start][column] != '.')
@@ -28,7 +28,7 @@ static int scan_column(board *b, size_t column, size_t start, size_t end)
     return (1);
 }
 
-size_t biggest_here(board *b, size_t x, size_t y)
+size_t biggest_here(board_t *b, size_t x, size_t y)
 {
     size_t size = 0;
 
@@ -44,7 +44,7 @@ size_t biggest_here(board *b, size_t x, size_t y)
     return (size);
 }
 
-void draw_square(board *b, square *s)
+void draw_square(board_t *b, square_t *s)
 {
     size_t i = s->x;
     size_t j = s->y;
@@ -61,7 +61,7 @@ void draw_square(board *b, square *s)
     }
 }
 
-static void squares_row(board *b, square *max, size_t y)
+static void squares_row(board_t *b, square_t *max, size_t y)
 {
     size_t x = 0;
     size_t temp;
@@ -77,16 +77,16 @@ static void squares_row(board *b, square *max, size_t y)
     }
 }
 
-static void start_square(square *s)
+static void start_square(square_t *s)
 {
     s->size = 0;
     s->x = 0;
     s->y = 0;
 }
 
-size_t bsq(board *b)
+size_t bsq(board_t *b)
 {
-    square max;
+    square_t max;
     size_t y = 0;
 
     start_square(&max);
